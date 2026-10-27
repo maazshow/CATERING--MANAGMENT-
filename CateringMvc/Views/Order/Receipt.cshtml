@@ -1,0 +1,97 @@
+@model Order
+@{
+    Layout = null;
+    var autoPrint = Context.Request.Query["print"] == "1";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Receipt #@Model.Id</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #e9e4dc; font-family: 'Courier New', monospace; color: #000; }
+        .toolbar { text-align: center; padding: 14px; }
+        .toolbar button, .toolbar a {
+            font: 600 15px system-ui, sans-serif; padding: 10px 18px; margin: 0 4px;
+            border: 0; border-radius: 8px; background: #5a1b16; color: #fff; cursor: pointer; text-decoration: none; display: inline-block;
+        }
+        .toolbar a { background: #fff; color: #5a1b16; border: 1px solid #5a1b16; }
+        .receipt { width: 80mm; max-width: 100%; margin: 0 auto 30px; background: #fff; padding: 14px 12px; box-shadow: 0 2px 12px rgba(0,0,0,.2); font-size: 13px; line-height: 1.45; }
+        .center { text-align: center; }
+        .shop { font-size: 20px; font-weight: bold; }
+        hr { border: 0; border-top: 1px dashed #000; margin: 8px 0; }
+        .row { display: flex; justify-content: space-between; gap: 8px; }
+        .row .v { text-align: right; word-break: break-word; }
+        .item { margin-bottom: 6px; }
+        .item .d { font-size: 12px; }
+        .total { font-size: 18px; font-weight: bold; }
+        .status { display: inline-block; border: 1px solid #000; padding: 1px 8px; font-weight: bold; margin: 0 2px 4px; }
+        @@media print {
+            body { background: #fff; }
+            .toolbar { display: none; }
+            .receipt { box-shadow: none; margin: 0; width: 100%; padding: 0; }
+            @@page { margin: 4mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button type="button" onclick="window.print()">🖨 Print</button>
+        <a href="/PendingOrders">Pending Orders</a>
+    </div>
+
+    <div class="receipt">
+        <div class="center">
+            <div class="shop">ZAIQA COOKING CENTER</div>
+            <div>Order Receipt</div>
+        </div>
+        <hr />
+        <div class="row"><span>Receipt #</span><span class="v">@Model.Id</span></div>
+        <div class="row"><span>Booked</span><span class="v">@Model.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</span></div>
+        <div class="row"><span>Order</span><span class="v"><strong>@Model.DeliveryDate.ToString("dd MMM yyyy")<br />@Model.DeliveryDate.ToString("hh:mm tt")</strong></span></div>
+        <hr />
+        <div class="row"><span>Customer</span><span class="v">@Model.CustomerName</span></div>
+        <div class="row"><span>Phone 1</span><span class="v">@Model.Phone1</span></div>
+        @if (!string.IsNullOrWhiteSpace(Model.Phone2))
+        {
+            <div class="row"><span>Phone 2</span><span class="v">@Model.Phone2</span></div>
+        }
+        <div class="row"><span>Address</span><span class="v">@Model.Address</span></div>
+        <hr />
+        @if (Model.Lines.Count > 0)
+        {
+            @foreach (var l in Model.Lines)
+            {
+                <div class="item">
+                    <div class="row"><strong>@l.Description</strong><span class="v">Rs @l.Amount.ToString("N0")</span></div>
+                    <div class="d">@l.QuantityOnly</div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="item">
+                <div class="row"><strong>@Model.ItemName</strong></div>
+                <div class="d">@Model.QuantityText</div>
+            </div>
+        }
+        <hr />
+        <div class="row total"><span>TOTAL</span><span class="v">Rs @Model.TotalPrice.ToString("N0")</span></div>
+        <div class="row"><span>Advance / Paid</span><span class="v">Rs @Model.AdvancePaid.ToString("N0")</span></div>
+        <div class="row total"><span>REMAINING</span><span class="v">Rs @Model.Remaining.ToString("N0")</span></div>
+        <hr />
+        <div class="center">
+            <span class="status">@(Model.Remaining <= 0 ? "PAID" : Model.AdvancePaid > 0 ? "PARTIAL PAYMENT" : "UNPAID")</span>
+            <span class="status">@(Model.Status == OrderStatus.Pending ? "PENDING" : "DONE")</span>
+            <p style="margin:10px 0 0">Shukriya! Dobara tashreef layein.</p>
+        </div>
+    </div>
+
+    @if (autoPrint)
+    {
+        <script>window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 300); });</script>
+    }
+</body>
+</html>

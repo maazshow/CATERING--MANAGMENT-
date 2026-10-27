@@ -1,0 +1,132 @@
+@model PriceSetting
+@{
+    ViewData["Title"] = "Price Adjustment";
+    var saved = TempData["Saved"] as string;
+}
+
+<h2 class="fw-bold mb-1">Price Adjustment</h2>
+<p class="text-muted">Order page ki total price in rates se banti hai. Order mein cooking charges pehle se bhari hoti hain aur us order ke liye badli ja sakti hain.</p>
+
+@if (!string.IsNullOrEmpty(saved))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i> @saved
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form asp-action="Save" method="post">
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">🍚 Biryani Daig</div>
+                <div class="card-body">
+                    <div class="section-label">Rice ke hisab se (per kg rice)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BiryaniRicePerKg", "Rice price (1 kg)", Model.BiryaniRicePerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BiryaniSabzMasalaPerKg", "Sabz masalay price (per kg rice)", Model.BiryaniSabzMasalaPerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BiryaniGaramMasalaPerKg", "Garam masalay price (per kg rice)", Model.BiryaniGaramMasalaPerKg))
+
+                    <div class="section-label mt-4">Meat ke hisab se (per kg meat)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BiryaniMeatPerKg", "Meat price (1 kg)", Model.BiryaniMeatPerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har biryani item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BiryaniCookingCharge", "Cooking charges (per item)", Model.BiryaniCookingCharge))
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">🍲 Korma (sada)</div>
+                <div class="card-body">
+                    <div class="section-label">Per kg meat</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("KormaMeatPerKg", "Meat price (1 kg)", Model.KormaMeatPerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("KormaCookingPerKg", "Cooking charges (per kg meat)", Model.KormaCookingPerKg))
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🥩 Beef Korma</div>
+                <div class="card-body">
+                    <div class="section-label">Per kg meat</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BeefKormaMeatPerKg", "Beef meat price (1 kg)", Model.BeefKormaMeatPerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("BeefKormaCookingPerKg", "Cooking charges (per kg meat)", Model.BeefKormaCookingPerKg))
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">🍮 Zarda</div>
+                <div class="card-body">
+                    <div class="section-label">Rice ke hisab se (per kg rice)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ZardaRicePerKg", "Rice price (1 kg)", Model.ZardaRicePerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ZardaSweetsPerKg", "Sweets price (per kg rice)", Model.ZardaSweetsPerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har zarda item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ZardaCookingCharge", "Cooking charges (per item)", Model.ZardaCookingCharge))
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">🍚 White Rice (sada chawal)</div>
+                <div class="card-body">
+                    <div class="section-label">Rice ki price</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("WhiteRicePerKg", "Rice price (1 kg)", Model.WhiteRicePerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har white rice item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("WhiteRiceCookingCharge", "Cooking charges (per item)", Model.WhiteRiceCookingCharge))
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">🍯 Gor Wala Chawal</div>
+                <div class="card-body">
+                    <div class="section-label">Rice ke hisab se (per kg rice)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("GurChawalRicePerKg", "Rice price (1 kg)", Model.GurChawalRicePerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("GurChawalGurPerKg", "Gor price (per kg rice)", Model.GurChawalGurPerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har gor wala chawal item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("GurChawalCookingCharge", "Cooking charges (per item)", Model.GurChawalCookingCharge))
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">🍚 Simple Rice</div>
+                <div class="card-body">
+                    <div class="section-label">Rice ki price</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("SimpleRicePerKg", "Rice price (1 kg)", Model.SimpleRicePerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har simple rice item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("SimpleRiceCookingCharge", "Cooking charges (per item)", Model.SimpleRiceCookingCharge))
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">🥣 Haleem</div>
+                <div class="card-body">
+                    <div class="section-label">Haleem ki price</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("HaleemPerKg", "Haleem price (1 kg)", Model.HaleemPerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har haleem item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("HaleemCookingCharge", "Cooking charges (per item)", Model.HaleemCookingCharge))
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🫘 Chana Wala Chawal</div>
+                <div class="card-body">
+                    <div class="section-label">Rice ke hisab se (per kg rice)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ChanaDaigPerKg", "Rice price (1 kg)", Model.ChanaDaigPerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ChanaDaigSabzMasalaPerKg", "Sabz masalay price (per kg rice)", Model.ChanaDaigSabzMasalaPerKg))
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ChanaDaigGaramMasalaPerKg", "Garam masalay price (per kg rice)", Model.ChanaDaigGaramMasalaPerKg))
+
+                    <div class="section-label mt-4">Cooking charges (har chana wala chawal item par)</div>
+                    @await Html.PartialAsync("_PriceField", new PriceFieldVm("ChanaDaigCookingCharge", "Cooking charges (per item)", Model.ChanaDaigCookingCharge))
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-main btn-lg"><i class="bi bi-save"></i> Save Prices</button>
+    </div>
+</form>
